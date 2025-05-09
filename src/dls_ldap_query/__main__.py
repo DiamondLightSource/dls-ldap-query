@@ -110,7 +110,7 @@ def query(
     ] = None,
 ):
     # alternative sources of search_string
-    if group is not None:
+    if group:
         # search for all users in a linux group
         group_obj = grp.getgrnam(group)
         attribute = "cn"  # searching by fedid
