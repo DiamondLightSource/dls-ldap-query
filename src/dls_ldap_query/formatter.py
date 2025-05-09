@@ -1,15 +1,15 @@
-from enum import Enum
+from enum import StrEnum
 
 from .ldap import Person
 
 
-class Formats(Enum):
+class Formats(StrEnum):
     """predifined output formats"""
 
-    none = 0
-    email = 1
-    fedid = 2
-    ansible = 3
+    none = "none"
+    email = "email"
+    fedid = "fedid"
+    ansible = "ansible"
 
 
 def format_results(
@@ -18,6 +18,10 @@ def format_results(
     """
     Format the results of the LDAP query.
     """
+
+    # supplying a format string overrides predefined formats
+    if format_str:
+        format = Formats.none
 
     for user in results:
         # using match allows us to use fstring features not available to str.format()
@@ -28,10 +32,16 @@ def format_results(
                     f"  {user.mail}"
                 )
             case Formats.email:
-                output = "{user.mail}"
+                output = f"{user.mail}"
             case Formats.fedid:
-                output = "{user.cn}"
+                output = f"{user.cn}"
             case Formats.none:
-                output = format_str.format(user)
+                try:
+                    output = format_str.format(user=user)
+                except KeyError:
+                    print("format_str should contain fields like: '{user.cn}'")
+                    exit(1)
 
-        print(output)
+        # skip blank format results
+        if output != "":
+            print(output)

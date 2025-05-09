@@ -8,7 +8,7 @@ import typer
 
 from . import __version__
 from .formatter import Formats, format_results
-from .ldap import LDAPServer
+from .ldap import ATTRIBUTES, LDAPServer
 
 __all__ = ["main"]
 
@@ -32,27 +32,40 @@ def query(
     search_string: Annotated[
         str, typer.Argument(help="comma separaed list of search terms")
     ] = "",
+    format: Annotated[
+        Formats,
+        typer.Option("--format", "-f", help="predefined formats for the output"),
+    ] = Formats.email,
+    format_str: Annotated[
+        str, typer.Option("--format_str", "-x", help="supply a custom format string")
+    ] = "",
     email: Annotated[
         bool,
         typer.Option(
+            "--email",
             "-e",
-            help="treat the search sting as a list of emails copied from Outlook",
+            help="A flag that treats the search string as a list of emails"
+            " copied from Outlook ()",
         ),
     ] = False,
     group: Annotated[
         str | None,
-        typer.Option("-g", help="A linux group name to extract users ids from"),
+        typer.Option(
+            "--group", "-g", help="A linux group name to extract users ids from"
+        ),
     ] = None,
     attribute: Annotated[
         str,
         typer.Option(
+            "--attribute",
             "-a",
-            help="The LDAP attribute to search for.",
+            help=f"The LDAP attribute to search for: {list(ATTRIBUTES)}",
         ),
     ] = "cn",
     server: Annotated[
         str,
         typer.Option(
+            "--server",
             "-s",
             help="The LDAP server to connect to.",
         ),
@@ -80,6 +93,7 @@ def query(
     elif email:
         # extract the emails from a list pasted from outlook
         search_array = RE_EMAIL.findall(search_string)
+        attribute = "mail"
     else:
         # treat search_string as a comma separated list
         search_array = search_string.split(",")
@@ -87,7 +101,7 @@ def query(
     ldap_server = LDAPServer(server, search_base)
 
     entries = ldap_server.search(search_array, attribute)
-    format_results(entries, Formats.ansible)
+    format_results(entries, format=format, format_str=format_str)
 
 
 if __name__ == "__main__":
