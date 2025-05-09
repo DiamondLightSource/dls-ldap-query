@@ -129,7 +129,7 @@ def query(
         search_string = file.read_text()
         search_array = search_string.splitlines()
     elif repo:
-        search_array = get_github_members()
+        search_array = get_github_members(debug=debug)
     else:
         # treat search_string as a comma separated list
         search_array = search_string.split(",")
