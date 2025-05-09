@@ -9,6 +9,7 @@ import typer
 
 from . import __version__
 from .formatter import Formats, format_results
+from .github import get_github_members
 from .ldap import ATTRIBUTES, LDAPServer
 
 __all__ = ["main"]
@@ -54,6 +55,14 @@ def query(
             help="supply the search terms in a file. Line break separated.",
         ),
     ] = None,
+    repo: Annotated[
+        bool,
+        typer.Option(
+            "-r",
+            "--repo",
+            help="get a list of fedids from the github-members GitLab repository.",
+        ),
+    ] = False,
     email: Annotated[
         bool,
         typer.Option(
@@ -109,6 +118,8 @@ def query(
     elif file:
         search_string = file.read_text()
         search_array = search_string.splitlines()
+    elif repo:
+        search_array = get_github_members()
     else:
         # treat search_string as a comma separated list
         search_array = search_string.split(",")
