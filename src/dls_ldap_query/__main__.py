@@ -136,4 +136,4 @@ def query(
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    typer.run(query)

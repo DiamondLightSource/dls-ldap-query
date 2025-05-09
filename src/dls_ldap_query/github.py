@@ -2,6 +2,7 @@
 A function to extract the list of fedids of GitHub users currently registered
 in the gitlab repo https://gitlab.diamond.ac.uk/github/github-members
 """
+
 import os
 from pathlib import Path
 from shutil import rmtree
