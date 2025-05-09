@@ -10,7 +10,7 @@ from tempfile import TemporaryDirectory
 REPO = "https://gitlab.diamond.ac.uk/github/github-members"
 
 
-def get_github_members() -> list[str]:
+def get_github_members(debug: bool = False) -> list[str]:
     """Look in github members repo and generate a list of fedids"""
 
     with TemporaryDirectory() as tmp:
@@ -23,6 +23,7 @@ def get_github_members() -> list[str]:
         for name in user_files:
             member_fedids.append(name.stem)
 
-        print(f"FOUND: {len(member_fedids)} fedIDs in github-members")
+        if debug:
+            print(f"FOUND: {len(member_fedids)} fedIDs in github-members")
 
         return member_fedids
