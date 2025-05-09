@@ -20,6 +20,9 @@ def format_results(
     Format the results of the LDAP query.
     """
 
+    # blank line to separate from any debugging messages
+    print()
+
     for user in sorted(results):
         # using match allows us to use fstring features not available to str.format()
         if format_str:
@@ -47,3 +50,5 @@ def format_results(
         # skip blank format results
         if output != "":
             print(output)
+        else:
+            print(f"ERROR: missing fields: {user}")
