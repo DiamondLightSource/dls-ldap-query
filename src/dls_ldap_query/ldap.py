@@ -24,7 +24,7 @@ ATTRIBUTES = Person.__annotations__.keys()
 
 class LDAPServer:
     default_server_url: str = "ralfed.cclrc.ac.uk"
-    default_search_base: str = "ou=DLS,dc=fed,dc=cclrc,dc=ac,dc=uk"
+    default_search_base: str = "dc=fed,dc=cclrc,dc=ac,dc=uk"
 
     def __init__(self, server_url: str, search_base: str):
         self.server_url = server_url
