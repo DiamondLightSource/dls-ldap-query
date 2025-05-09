@@ -33,7 +33,9 @@ class LDAPServer:
         self.connection = ldap3.Connection(self.server)
         self.connection.bind()
 
-    def search(self, search_strings: list[str], attribute: str) -> list[Person]:
+    def search(
+        self, search_strings: list[str], attribute: str, debug: bool = False
+    ) -> list[Person]:
         result = []
         for search_string in search_strings:
             search_filter = f"({attribute}={search_string})"
@@ -60,11 +62,13 @@ class LDAPServer:
                 if "cn" in entry_dict:
                     if entry_dict["cn"].lower() != entry_dict["cn"]:
                         # reject uppercase common name - not a fedid
-                        print(f"DROPPED: non-fedid: {e_dict}")
+                        if debug:
+                            print(f"DROPPED: non-fedid: {e_dict}")
                         # continue
                 else:
                     # reject entries that have no fedid
-                    print(f"DROPPED: missing fedid: {e_dict}")
+                    if debug:
+                        print(f"DROPPED: missing fedid: {e_dict}")
                     continue
 
                 # convert to dataclass
@@ -72,6 +76,7 @@ class LDAPServer:
                 result.append(entry)
 
             if count == 0:
-                print(f"NOT FOUND in LDAP: {search_filter}")
+                if debug:
+                    print(f"NOT FOUND in LDAP: {search_filter}")
 
         return result

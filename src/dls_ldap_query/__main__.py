@@ -102,6 +102,14 @@ def query(
             help="The LDAP search base to use.",
         ),
     ] = LDAPServer.default_search_base,
+    debug: Annotated[
+        bool,
+        typer.Option(
+            "--debug",
+            "-d",
+            help="Add debugging info",
+        ),
+    ] = False,
     version: Annotated[
         bool | None,
         typer.Option(
@@ -133,7 +141,7 @@ def query(
 
     ldap_server = LDAPServer(server, search_base)
 
-    entries = ldap_server.search(search_array, attribute)
+    entries = ldap_server.search(search_array, attribute, debug=debug)
     format_results(entries, format=output, format_str=format_str)
 
 
