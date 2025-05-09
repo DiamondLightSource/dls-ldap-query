@@ -45,7 +45,9 @@ class LDAPServer:
                 search_scope=ldap3.SUBTREE,
             )
 
+            count = 0
             for e in self.connection.entries:
+                count += 1
                 entry_dict = {}
                 # flatten out the values into strings instead of lists of strings
                 e_dict = e.entry_attributes_as_dict
@@ -58,13 +60,18 @@ class LDAPServer:
                 if "cn" in entry_dict:
                     if entry_dict["cn"].lower() != entry_dict["cn"]:
                         # reject uppercase common name - not a fedid
-                        continue
+                        print(f"DROPPED: non-fedid: {e_dict}")
+                        # continue
                 else:
                     # reject entries that have no fedid
+                    print(f"DROPPED: missing fedid: {e_dict}")
                     continue
 
                 # convert to dataclass
                 entry = Person(**entry_dict)
                 result.append(entry)
+
+            if count == 0:
+                print(f"NOT FOUND in LDAP: {search_filter}")
 
         return result

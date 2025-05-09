@@ -23,4 +23,6 @@ def get_github_members() -> list[str]:
         for name in user_files:
             member_fedids.append(name.stem)
 
+        print(f"FOUND: {len(member_fedids)} fedIDs in github-members")
+
         return member_fedids
