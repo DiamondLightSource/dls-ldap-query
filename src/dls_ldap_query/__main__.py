@@ -32,27 +32,33 @@ def main():
 
 def query(
     search_string: Annotated[
-        str, typer.Argument(help="comma separaed list of search terms")
+        str, typer.Argument(help="A comma separaed list of search terms.")
     ] = "",
     output: Annotated[
         Formats,
-        typer.Option("--output", "-o", help="predefined formats for the output"),
+        typer.Option("--output", "-o", help="Predefined formats for the output."),
     ] = Formats.email,
     format_str: Annotated[
         str,
         typer.Option(
             "--format_str",
             "-x",
-            help="supply a custom format string"
+            help="Supply a custom format string enclosed in single quotes."
             "e.g. '{user.givenName} {user.sn} {user.mail}'",
         ),
     ] = "",
+    group: Annotated[
+        str | None,
+        typer.Option(
+            "--group", "-g", help="A linux group name to extract user ids from."
+        ),
+    ] = None,
     file: Annotated[
         Path | None,
         typer.Option(
             "-f",
             "--file",
-            help="supply the search terms in a file. Line break separated.",
+            help="Supply the search terms in a file. Line break separated.",
         ),
     ] = None,
     repo: Annotated[
@@ -60,7 +66,7 @@ def query(
         typer.Option(
             "-r",
             "--repo",
-            help="get a list of fedids from the github-members GitLab repository.",
+            help="Get the list of fedids from the github-members GitLab repository.",
         ),
     ] = False,
     email: Annotated[
@@ -69,21 +75,16 @@ def query(
             "--email",
             "-e",
             help="A flag that treats the search string as a list of emails"
-            " copied from Outlook ()",
+            " copied from Outlook.",
         ),
     ] = False,
-    group: Annotated[
-        str | None,
-        typer.Option(
-            "--group", "-g", help="A linux group name to extract users ids from"
-        ),
-    ] = None,
     attribute: Annotated[
         str,
         typer.Option(
             "--attribute",
             "-a",
-            help=f"The LDAP attribute to search for: {list(ATTRIBUTES)}",
+            help=f"The LDAP attribute to search for "
+            f"(cn=common_name=fedID): {list(ATTRIBUTES)}",
         ),
     ] = "cn",
     server: Annotated[
@@ -104,8 +105,9 @@ def query(
     version: Annotated[
         bool | None,
         typer.Option(
+            "--version",
             callback=version_callback,
-            help="print the version number and exit",
+            help="Print the version number and exit",
         ),
     ] = None,
 ):
