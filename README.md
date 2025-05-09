@@ -5,7 +5,12 @@
 
 # dls_ldap_query
 
-Format lists of users by querying LDAP
+## Overview
+Create formatted lists of users by querying LDAP
+
+A DLS Internal tool.
+
+## Links
 
 Source          | <https://github.com/DiamondLightSource/dls-ldap-query>
 :---:           | :---:
@@ -13,11 +18,7 @@ PyPI            | `pip install dls-ldap-query`
 Docker          | `docker run ghcr.io/diamondlightsource/dls-ldap-query:latest`
 Releases        | <https://github.com/DiamondLightSource/dls-ldap-query/releases>
 
-The following command gives details of the command line parameters:
 
-```
-dls_ldap_query --help
-```
 ## Temporary deployment
 
 This will be deployed as an environment module. But for the moment you can access it at DLS using this path:
