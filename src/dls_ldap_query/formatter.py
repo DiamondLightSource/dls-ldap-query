@@ -10,6 +10,7 @@ class Formats(StrEnum):
     fedid = "fedid"
     ansible = "ansible"
     csv = "csv"
+    raw = "raw"
 
 
 def format_results(
@@ -38,8 +39,10 @@ def format_results(
                     output = f"{user.mail}"
                 case Formats.fedid:
                     output = f"{user.cn}"
-                case _:
-                    raise RuntimeError("should never reach this")
+                case Formats.csv:
+                    output = f'{user.cn}, "{user.displayName}", {user.mail}'
+                case Formats.raw:
+                    output = str(user)
 
         # skip blank format results
         if output != "":
