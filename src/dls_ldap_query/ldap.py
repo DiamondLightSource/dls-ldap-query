@@ -5,13 +5,17 @@ import ldap3
 
 # LDAP attributes to get. Full list that could be added herer is found at:
 # https://www.ibm.com/docs/en/cip?topic=api-user-identity-attributes
-@dataclass
+@dataclass(order=True)
 class Person:
+    sn: str  # The surname of the person
     cn: str  # The common name (fedID)
     displayName: str  # e.g. Knap, Giles (DLSLtd,RAL,LSCI)
     mail: str  # The email address of the person
     givenName: str  # The first name of the person
-    sn: str  # The surname of the person
+
+    def __post_init__(self):
+        # sort by surname (sn needs to be first in the attribute list above)
+        self.sort_index = self.sn
 
 
 # a list of the above fields

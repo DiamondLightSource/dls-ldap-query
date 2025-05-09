@@ -2,6 +2,7 @@
 
 import grp
 import re
+from pathlib import Path
 from typing import Annotated
 
 import typer
@@ -32,13 +33,27 @@ def query(
     search_string: Annotated[
         str, typer.Argument(help="comma separaed list of search terms")
     ] = "",
-    format: Annotated[
+    output: Annotated[
         Formats,
-        typer.Option("--format", "-f", help="predefined formats for the output"),
+        typer.Option("--output", "-o", help="predefined formats for the output"),
     ] = Formats.email,
     format_str: Annotated[
-        str, typer.Option("--format_str", "-x", help="supply a custom format string")
+        str,
+        typer.Option(
+            "--format_str",
+            "-x",
+            help="supply a custom format string"
+            "e.g. '{user.givenName} {user.sn} {user.mail}'",
+        ),
     ] = "",
+    file: Annotated[
+        Path | None,
+        typer.Option(
+            "-f",
+            "--file",
+            help="supply the search terms in a file. Line break separated.",
+        ),
+    ] = None,
     email: Annotated[
         bool,
         typer.Option(
@@ -85,23 +100,28 @@ def query(
         ),
     ] = None,
 ):
+    # alternative sources of search_string
     if group is not None:
         # search for all users in a linux group
         group_obj = grp.getgrnam(group)
-        attribute = "cn"
+        attribute = "cn"  # searching by fedid
         search_array = group_obj.gr_mem
-    elif email:
-        # extract the emails from a list pasted from outlook
-        search_array = RE_EMAIL.findall(search_string)
-        attribute = "mail"
+    elif file:
+        search_string = file.read_text()
+        search_array = search_string.splitlines()
     else:
         # treat search_string as a comma separated list
         search_array = search_string.split(",")
 
+    if email:
+        # extract the emails from a list pasted from outlook
+        search_array = RE_EMAIL.findall(search_string)
+        attribute = "mail"  # searching by email address
+
     ldap_server = LDAPServer(server, search_base)
 
     entries = ldap_server.search(search_array, attribute)
-    format_results(entries, format=format, format_str=format_str)
+    format_results(entries, format=output, format_str=format_str)
 
 
 if __name__ == "__main__":
