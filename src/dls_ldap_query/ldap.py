@@ -37,7 +37,10 @@ class LDAPServer:
         self, search_strings: list[str], attribute: str, debug: bool = False
     ) -> list[Person]:
         result = []
+
         for search_string in search_strings:
+            if search_string is None or search_string == "":
+                search_string = "*"
             search_filter = f"({attribute}={search_string})"
 
             self.connection.search(

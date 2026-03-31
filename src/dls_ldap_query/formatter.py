@@ -50,5 +50,4 @@ def format_results(
         # skip blank format results
         if output != "":
             print(output)
-        else:
-            print(f"ERROR: missing fields: {user}")
+
