@@ -50,4 +50,3 @@ def format_results(
         # skip blank format results
         if output != "":
             print(output)
-
